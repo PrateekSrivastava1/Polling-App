@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import PollingResult from "./PollingResult";
 
 const StudentComponent = ({ socket }) => {
   const [name, setName] = useState("");
@@ -12,6 +11,7 @@ const StudentComponent = ({ socket }) => {
 
     if (storedName) {
       setName(storedName);
+      setShowQuestion(true);
     }
 
     const handleNewQuestion = (question) => {
