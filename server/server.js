@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("handle-polling", ({ option }) => {
-    if (currentQuestion && currentQuestion.options.includes(option)) {
+    if (currentQuestion && currentQuestion.options?.includes(option)) {
       if (currentQuestion.optionsFrequency[option]) {
         currentQuestion.optionsFrequency[option] += 1;
       } else {
@@ -60,6 +60,14 @@ io.on("connection", (socket) => {
       });
 
       currentQuestion.answered = true;
+
+      const student = connectedStudents.get(socket.id);
+      if (student) {
+        student.voted = true;
+        connectedStudents.set(socket.id, student);
+        io.emit("student-vote-validation", [...connectedStudents.values()]);
+      }
+
       io.emit("new-question", currentQuestion);
 
       io.emit("polling-results", currentQuestion.results);
@@ -70,6 +78,7 @@ io.on("connection", (socket) => {
     const student = {
       name,
       socketId: socket.id,
+      voted: false,
     };
 
     connectedStudents.set(socket.id, student);

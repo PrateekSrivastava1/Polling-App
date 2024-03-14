@@ -10,7 +10,6 @@ const App = () => {
   const [isTeacher, setIsTeacher] = useState(null);
 
   const handleRoleSelection = (role) => {
-    console.log(role);
     setIsTeacher(role === "teacher");
   };
 

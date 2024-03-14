@@ -5,13 +5,16 @@ const StudentComponent = ({ socket }) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [showQuestion, setShowQuestion] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [connectedStudents, setConnectedStudents] = useState(null);
+  const [votingValidation, setVotingValidation] = useState(false);
 
   useEffect(() => {
-    const storedName = localStorage.getItem("studentName");
+    const name = localStorage.getItem("studentName");
 
-    if (storedName) {
-      setName(storedName);
+    if (name) {
+      setName(name);
       setShowQuestion(true);
+      socket.emit("student-set-name", { name });
     }
 
     const handleNewQuestion = (question) => {
@@ -20,10 +23,16 @@ const StudentComponent = ({ socket }) => {
       setSelectedOption("");
     };
 
+    const handleStudentVoteValidation = (connectedStudents) => {
+      setConnectedStudents(connectedStudents);
+    };
+
     socket.on("new-question", handleNewQuestion);
+    socket.on("student-vote-validation", handleStudentVoteValidation);
 
     return () => {
       socket.off("new-question", handleNewQuestion);
+      socket.off("student-vote-validation", handleStudentVoteValidation);
     };
   }, [socket]);
 
@@ -43,7 +52,14 @@ const StudentComponent = ({ socket }) => {
     setSelectedOption(e.target.value);
   };
 
-  console.log("selectedOption: ", selectedOption);
+  useEffect(() => {
+    const found = connectedStudents
+      ? connectedStudents?.find((data) => data.socketId === socket.id)
+      : undefined;
+    if (found) {
+      setVotingValidation(found.voted);
+    }
+  }, [connectedStudents]);
 
   return (
     <div
@@ -65,7 +81,7 @@ const StudentComponent = ({ socket }) => {
         >
           <h1 style={{ textAlign: "center" }}>Welcome, {name}</h1>
           {currentQuestion ? (
-            currentQuestion.answered == false ? (
+            currentQuestion.answered == false || votingValidation == false ? (
               <div
                 style={{
                   rowGap: "16px",

@@ -28,6 +28,12 @@ const TeacherComponent = ({ socket }) => {
     setOptions(updatedOptions);
   };
 
+  const askAnotherQuestion = () => {
+    setQuestionPublished(false);
+    setQuestion("");
+    setOptions([""]);
+  };
+
   return (
     <div
       style={{
@@ -41,7 +47,7 @@ const TeacherComponent = ({ socket }) => {
         <>
           <PollingResult socket={socket} something="teacher something" />
           <button
-            onClick={() => setQuestionPublished(false)}
+            onClick={askAnotherQuestion}
             style={{
               width: "36%",
               height: "30px",
@@ -50,6 +56,7 @@ const TeacherComponent = ({ socket }) => {
               color: "white",
               border: "none",
               marginTop: "50px",
+              fontFamily: "Comic Sans MS",
             }}
           >
             Ask Another Question?
@@ -112,7 +119,6 @@ const TeacherComponent = ({ socket }) => {
             >
               Add another option +
             </button>
-            <br />
             <button
               onClick={askQuestion}
               style={{
