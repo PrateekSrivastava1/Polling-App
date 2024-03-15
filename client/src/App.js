@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import io from "socket.io-client";
+import "bootstrap/dist/css/bootstrap.css";
+import "../src/App.css";
 
 import TeacherComponent from "./components/TeacherComponent";
 import StudentComponent from "./components/StudentComponent";
@@ -20,6 +22,8 @@ const App = () => {
         height: "100vh",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#032830",
+        color: "white",
       }}
     >
       {isTeacher === null ? (
@@ -29,36 +33,28 @@ const App = () => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            border: "1px solid black",
             width: "80%",
           }}
         >
-          <h1 style={{ fontFamily: "Comic Sans MS" }}>
-            Select what type of user you are?
-          </h1>
+          <h1>Select what type of user you are?</h1>
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               width: "50%",
               margin: "100px",
+              columnGap: "50px",
             }}
           >
             <button
               onClick={() => handleRoleSelection("teacher")}
-              style={{
-                padding: "50px",
-                cursor: "pointer",
-              }}
+              className="parentAndStudentButton"
             >
               I am a Teacher
             </button>
             <button
               onClick={() => handleRoleSelection("student")}
-              style={{
-                padding: "50px",
-                cursor: "pointer",
-              }}
+              className="parentAndStudentButton"
             >
               I am a Student
             </button>

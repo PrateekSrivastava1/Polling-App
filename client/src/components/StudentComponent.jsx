@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Button, ProgressBar } from "react-bootstrap";
+import tower from "../assets/tower-icon.png";
+
+import { getVariant } from "../components/components.utils";
 
 const StudentComponent = ({ socket }) => {
   const [name, setName] = useState("");
@@ -48,10 +52,6 @@ const StudentComponent = ({ socket }) => {
     });
   };
 
-  const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
-  };
-
   useEffect(() => {
     const found = connectedStudents
       ? connectedStudents?.find((data) => data.socketId === socket.id)
@@ -69,14 +69,14 @@ const StudentComponent = ({ socket }) => {
         width: "100%",
         height: "80vh",
         padding: "200px",
-        fontFamily: "Comic Sans MS",
       }}
     >
       {showQuestion && name ? (
         <div
           style={{
-            border: "2px solid black",
             width: "100%",
+            border: "1px solid #6edff6",
+            backgroundColor: "#134652",
           }}
         >
           <h1 style={{ textAlign: "center" }}>Welcome, {name}</h1>
@@ -86,101 +86,100 @@ const StudentComponent = ({ socket }) => {
                 style={{
                   rowGap: "16px",
                   columnGap: "16px",
-                  borderTop: "2px solid black",
+                  borderTop: "1px solid #6edff6",
                   marginLeft: "0 16px",
                   padding: "50px",
                 }}
               >
-                <h2 style={{}}>Question: {currentQuestion.question}</h2>
+                <h2>Question: {currentQuestion.question}</h2>
                 {currentQuestion.options.map((option, index) => (
                   <div
                     key={index}
                     style={{
                       display: "flex",
-                      border: `2px solid ${
-                        selectedOption === option ? "green" : "black"
-                      }`,
+                      border:
+                        selectedOption === option
+                          ? "2px solid green"
+                          : "1px solid #6edff6",
                       justifyContent: "space-between",
                       margin: "16px 0",
                       height: "26px",
-                      padding: "10px",
+                      padding: "20px",
                       cursor: "pointer",
+                      alignItems: "center",
+                      borderRadius: "7px",
                     }}
+                    onClick={() => setSelectedOption(option)}
                   >
-                    <label htmlFor={`option${index}`}>{option}</label>
-                    <input
-                      type="radio"
-                      id={`option${index}`}
-                      name="options"
-                      value={option}
-                      checked={selectedOption === option}
-                      onChange={handleOptionChange}
-                      style={{
-                        cursor: "pointer",
-                      }}
-                    />
+                    {option}
                   </div>
                 ))}
-                <button
+                <Button
+                  variant="primary"
                   onClick={handlePoling}
                   disabled={!selectedOption}
-                  style={{
-                    width: "36%",
-                    height: "30px",
-                    cursor: "pointer",
-                    background: "black",
-                    color: "white",
-                    border: "none",
-                  }}
                 >
                   Submit
-                </button>
+                </Button>
               </div>
             ) : (
               <div
                 style={{
-                  border: "2px solid black",
+                  marginTop: "50px",
+                  border: "1px solid #6edff6",
+                  backgroundColor: "#134652",
+                  marginBottom: "50px",
                 }}
               >
-                <h2 style={{ textAlign: "center" }}>Polling Results</h2>
+                <h2
+                  style={{
+                    textAlign: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={tower}
+                    alt=""
+                    width="20px"
+                    height="20px"
+                    style={{ marginRight: "20px" }}
+                  />
+                  Live Results
+                </h2>
                 <ul
                   style={{
                     rowGap: "16px",
                     columnGap: "16px",
-                    borderTop: "2px solid black",
+                    rowGap: "16px",
+                    borderTop: "1px solid #6edff6",
+                    width: "100%",
                   }}
                 >
                   {currentQuestion &&
                     Object.entries(currentQuestion.optionsFrequency).map(
                       ([option]) => (
-                        <li
-                          key={option}
+                        <div
                           style={{
-                            display: "flex",
-                            border: "2px solid black",
-                            justifyContent: "space-between",
                             margin: "16px",
-                            height: "26px",
-                            padding: "10px",
                           }}
                         >
-                          <span
-                            style={{
-                              display: "flex",
-                              alignContent: "center",
-                            }}
-                          >
-                            {option}
-                          </span>
-                          <span
-                            style={{
-                              display: "flex",
-                              alignContent: "center",
-                            }}
-                          >
-                            {currentQuestion.results[option]}%
-                          </span>
-                        </li>
+                          <ProgressBar
+                            now={
+                              parseInt(currentQuestion.results[option]) ?? "0"
+                            }
+                            label={`${option}              ${parseInt(
+                              currentQuestion.results[option]
+                            )}%`}
+                            variant={getVariant(
+                              parseInt(currentQuestion.results[option])
+                            )}
+                            animated={
+                              getVariant(
+                                parseInt(currentQuestion.results[option])
+                              ) != "success"
+                            }
+                          />
+                        </div>
                       )
                     )}
                 </ul>
@@ -209,26 +208,20 @@ const StudentComponent = ({ socket }) => {
             placeholder="Enter your name"
             required
             style={{
-              width: "35%",
-              height: "30px",
-              border: "2px solid black",
+              width: "45%",
+              padding: "10px",
+              height: "40px",
+              border: `1px solid #087990`,
+              borderRadius: "7px",
+              border: `1px solid #0dcaf0`,
+              backgroundColor: "#2a444a",
+              outline: "none",
+              color: "white",
             }}
           />
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            style={{
-              width: "35%",
-              height: "30px",
-              cursor: "pointer",
-              background: "black",
-              color: "white",
-              border: "none",
-              fontFamily: "Comic Sans MS",
-            }}
-          >
+          <Button variant="info" size="lg" onClick={handleSubmit}>
             Submit
-          </button>
+          </Button>
         </div>
       )}
     </div>
